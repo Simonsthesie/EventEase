@@ -22,30 +22,31 @@ import { WeatherCard } from '../components/WeatherCard';
 import { theme } from '../utils/theme';
 import { dateUtils } from '../utils/dateUtils';
 import { weatherService } from '../services/weatherService';
+import type { EventItem } from '../contexts/EventContext';
 import { locationService } from '../services/locationService';
 
-export const EventDetailsScreen = ({ navigation, route }) => {
+export const EventDetailsScreen = ({ navigation, route }: { navigation: any; route: any }) => {
   const { eventId } = route.params;
   const { getEventById, toggleParticipation, deleteEvent } = useEvents();
-  const [event, setEvent] = useState(null);
-  const [weather, setWeather] = useState(null);
-  const [loadingWeather, setLoadingWeather] = useState(false);
+  const [event, setEvent] = useState<EventItem | null>(null);
+  const [weather, setWeather] = useState<any>(null);
+  const [loadingWeather, setLoadingWeather] = useState<boolean>(false);
   const [userLocation, setUserLocation] = useState(null);
   const [distanceText, setDistanceText] = useState('');
 
   const loadEvent = useCallback(() => {
     const eventData = getEventById(eventId);
-    setEvent(eventData);
+    setEvent(eventData || null);
   }, [eventId, getEventById]);
 
   const loadWeather = useCallback(async () => {
     setLoadingWeather(true);
     try {
       const weatherData = await weatherService.getWeatherForEvent({
-        eventDateISO: event?.date,
-        city: event?.location,
-        lat: event?.latitude,
-        lon: event?.longitude,
+        eventDateISO: event?.date || new Date().toISOString(),
+        city: event?.location || undefined,
+        lat: event?.latitude ?? undefined,
+        lon: event?.longitude ?? undefined,
       });
       setWeather(weatherData);
     } catch (error) {
@@ -70,7 +71,7 @@ export const EventDetailsScreen = ({ navigation, route }) => {
       try {
         if (!event?.latitude || !event?.longitude) return;
         const loc = await locationService.getCurrentLocation();
-        setUserLocation(loc);
+        setUserLocation(loc as any);
         const d = locationService.calculateDistance(
           loc.latitude,
           loc.longitude,
@@ -115,18 +116,18 @@ export const EventDetailsScreen = ({ navigation, route }) => {
   };
 
   const handleOpenMap = () => {
-    if (event.latitude && event.longitude) {
+    if (event && event.latitude && event.longitude) {
       const url = Platform.select({
         ios: `maps:0,0?q=${event.latitude},${event.longitude}`,
         android: `geo:0,0?q=${event.latitude},${event.longitude}`,
       });
-      Linking.openURL(url);
-    } else if (event.location) {
+      if (url) Linking.openURL(url);
+    } else if (event && event.location) {
       const url = Platform.select({
         ios: `maps:0,0?q=${encodeURIComponent(event.location)}`,
         android: `geo:0,0?q=${encodeURIComponent(event.location)}`,
       });
-      Linking.openURL(url);
+      if (url) Linking.openURL(url);
     }
   };
 
@@ -138,7 +139,7 @@ export const EventDetailsScreen = ({ navigation, route }) => {
     );
   }
 
-  const isToday = dateUtils.isToday(event.date);
+  const isToday = event ? dateUtils.isToday(event.date) : false;
 
   return (
     <View style={styles.container}>

@@ -14,14 +14,14 @@ import { theme } from '../utils/theme';
 import { dateUtils } from '../utils/dateUtils';
 import { locationService } from '../services/locationService';
 
-export const CalendarScreen = ({ navigation }) => {
+export const CalendarScreen = ({ navigation }: { navigation: any }) => {
   const { events, toggleParticipation, deleteEvent } = useEvents();
   const [selectedDate, setSelectedDate] = useState('');
-  const [userLocation, setUserLocation] = useState(null);
+  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
 
   // Créer un objet de dates marquées pour le calendrier
   const markedDates = useMemo(() => {
-    const marked = {};
+    const marked: Record<string, any> = {};
 
     events.forEach(event => {
       const date = new Date(event.date).toISOString().split('T')[0];
@@ -89,11 +89,11 @@ export const CalendarScreen = ({ navigation }) => {
     getUserLocation();
   }, []);
 
-  const handleDayPress = day => {
+  const handleDayPress = (day: { dateString: string }) => {
     setSelectedDate(day.dateString);
   };
 
-  const handleDelete = eventId => {
+  const handleDelete = (eventId: string) => {
     Alert.alert("Supprimer l'événement", 'Êtes-vous sûr de vouloir supprimer cet événement ?', [
       { text: 'Annuler', style: 'cancel' },
       {

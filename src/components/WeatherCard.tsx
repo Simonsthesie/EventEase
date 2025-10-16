@@ -4,7 +4,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { theme } from '../utils/theme';
 import { weatherService } from '../services/weatherService';
 
-export const WeatherCard = ({ weather }) => {
+type Weather = {
+  temp: number;
+  description?: string;
+  icon?: string;
+  humidity?: number;
+  windSpeed?: number;
+} | null;
+
+export const WeatherCard: React.FC<{ weather: Weather }> = ({ weather }) => {
   if (!weather) return null;
 
   return (
@@ -16,7 +24,7 @@ export const WeatherCard = ({ weather }) => {
 
       <View style={styles.content}>
         <Image
-          source={{ uri: weatherService.getWeatherIconUrl(weather.icon) }}
+          source={{ uri: weatherService.getWeatherIconUrl(weather.icon || '01d') }}
           style={styles.icon}
         />
         <View style={styles.info}>

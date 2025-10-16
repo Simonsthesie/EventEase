@@ -24,9 +24,11 @@ import { theme } from '../utils/theme';
 import { validation } from '../utils/validation';
 import { dateUtils } from '../utils/dateUtils';
 import { locationService } from '../services/locationService';
-import { placesService } from '../services/placesService';
+import { placesService, PlaceSuggestion } from '../services/placesService';
 
-export const EventFormScreen = ({ navigation, route }) => {
+type NavProps = { navigation: any; route: any };
+
+export const EventFormScreen = ({ navigation, route }: NavProps) => {
   const { eventId } = route.params || {};
   const { addEvent, updateEvent, getEventById } = useEvents();
   const [loading, setLoading] = useState(false);
@@ -39,17 +41,17 @@ export const EventFormScreen = ({ navigation, route }) => {
     description: '',
     date: new Date(),
     location: '',
-    latitude: null,
-    longitude: null,
+    latitude: null as number | null,
+    longitude: null as number | null,
   });
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Autocomplétion lieu
   const [placeQuery, setPlaceQuery] = useState('');
-  const [placeResults, setPlaceResults] = useState([]);
+  const [placeResults, setPlaceResults] = useState<PlaceSuggestion[]>([]);
   const [searchingPlaces, setSearchingPlaces] = useState(false);
-  const debounceRef = useRef(null);
+  const debounceRef = useRef<number | null>(null);
 
   const loadExistingEvent = useCallback(() => {
     if (!eventId) return;
@@ -79,18 +81,20 @@ export const EventFormScreen = ({ navigation, route }) => {
       setPlaceResults([]);
       return;
     }
-    debounceRef.current = setTimeout(async () => {
+    debounceRef.current = window.setTimeout(async () => {
       setSearchingPlaces(true);
       const results = await placesService.search(placeQuery, 6);
       setPlaceResults(results);
       setSearchingPlaces(false);
     }, 350);
-    return () => clearTimeout(debounceRef.current);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
   }, [placeQuery]);
 
   const handleSubmit = async () => {
     // Validation
-    const newErrors = {};
+    const newErrors: Record<string, string> = {};
 
     if (!validation.validateEventTitle(formData.title)) {
       newErrors.title = validation.getErrorMessage('title', formData.title);
@@ -243,7 +247,7 @@ export const EventFormScreen = ({ navigation, route }) => {
 
               <DateTimePicker
                 value={tempDate}
-                mode={pickerMode}
+                mode={pickerMode as any}
                 display={Platform.OS === 'ios' ? 'inline' : 'default'}
                 onChange={(event, selected) => {
                   if (!selected) return;

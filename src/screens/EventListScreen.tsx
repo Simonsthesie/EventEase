@@ -22,12 +22,12 @@ import { Loading } from '../components/Loading';
 import { theme } from '../utils/theme';
 import { locationService } from '../services/locationService';
 
-export const EventListScreen = ({ navigation }) => {
+export const EventListScreen = ({ navigation }: { navigation: any }) => {
   const { user, logout } = useAuth();
   const { events, loading, toggleParticipation, deleteEvent, refreshEvents } = useEvents();
   const [refreshing, setRefreshing] = useState(false);
   const [filter, setFilter] = useState('all'); // all, upcoming, participated
-  const [userLocation, setUserLocation] = useState(null);
+  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
 
   useEffect(() => {
     getUserLocation();
@@ -59,7 +59,7 @@ export const EventListScreen = ({ navigation }) => {
     ]);
   };
 
-  const handleDelete = eventId => {
+  const handleDelete = (eventId: string) => {
     Alert.alert("Supprimer l'événement", 'Êtes-vous sûr de vouloir supprimer cet événement ?', [
       { text: 'Annuler', style: 'cancel' },
       {
@@ -86,7 +86,7 @@ export const EventListScreen = ({ navigation }) => {
     }
 
     // Trier par date (les plus récents en premier)
-    filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+    filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
     // Ajouter la distance si disponible
     if (userLocation) {

@@ -36,7 +36,7 @@ export const locationService = {
     }
   },
 
-  calculateDistance(lat1, lon1, lat2, lon2) {
+  calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
     // Formule de Haversine pour calculer la distance entre deux points
     const R = 6371; // Rayon de la Terre en km
     const dLat = this.toRad(lat2 - lat1);
@@ -52,11 +52,11 @@ export const locationService = {
     return distance;
   },
 
-  toRad(degrees) {
+  toRad(degrees: number) {
     return degrees * (Math.PI / 180);
   },
 
-  formatDistance(distanceKm) {
+  formatDistance(distanceKm: number) {
     if (distanceKm < 1) {
       return `${Math.round(distanceKm * 1000)} m`;
     }

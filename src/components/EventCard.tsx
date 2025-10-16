@@ -3,8 +3,17 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { theme } from '../utils/theme';
 import { dateUtils } from '../utils/dateUtils';
+import type { EventItem } from '../contexts/EventContext';
 
-export const EventCard = ({ event, onPress, onParticipate, onEdit, onDelete }) => {
+interface EventCardProps {
+  event: EventItem;
+  onPress: () => void;
+  onParticipate: () => void;
+  onEdit?: () => void;
+  onDelete?: () => void;
+}
+
+export const EventCard: React.FC<EventCardProps> = ({ event, onPress, onParticipate, onEdit, onDelete }) => {
   const isPast = dateUtils.isPast(event.date);
   const isToday = dateUtils.isToday(event.date);
 

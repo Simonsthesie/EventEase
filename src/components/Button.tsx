@@ -1,8 +1,23 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, ViewStyle, TextStyle } from 'react-native';
 import { theme } from '../utils/theme';
 
-export const Button = ({
+type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'danger';
+type ButtonSize = 'small' | 'medium' | 'large';
+
+interface ButtonProps {
+  title: string;
+  onPress: () => void;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  disabled?: boolean;
+  loading?: boolean;
+  icon?: React.ReactNode;
+  style?: ViewStyle | TextStyle | any;
+  textStyle?: TextStyle | any;
+}
+
+export const Button: React.FC<ButtonProps> = ({
   title,
   onPress,
   variant = 'primary',
@@ -13,8 +28,8 @@ export const Button = ({
   style,
   textStyle,
 }) => {
-  const getButtonStyle = () => {
-    const baseStyle = [styles.button];
+  const getButtonStyle = (): ViewStyle[] => {
+    const baseStyle: ViewStyle[] = [styles.button as ViewStyle];
 
     if (variant === 'primary') {
       baseStyle.push(styles.primaryButton);
@@ -39,19 +54,19 @@ export const Button = ({
     return baseStyle;
   };
 
-  const getTextStyle = () => {
-    const baseStyle = [styles.text];
+  const getTextStyle = (): TextStyle[] => {
+    const baseStyle: TextStyle[] = [styles.text as TextStyle];
 
     if (variant === 'outline') {
-      baseStyle.push(styles.outlineText);
+      baseStyle.push(styles.outlineText as TextStyle);
     } else {
-      baseStyle.push(styles.whiteText);
+      baseStyle.push(styles.whiteText as TextStyle);
     }
 
     if (size === 'small') {
-      baseStyle.push(styles.smallText);
+      baseStyle.push(styles.smallText as TextStyle);
     } else if (size === 'large') {
-      baseStyle.push(styles.largeText);
+      baseStyle.push(styles.largeText as TextStyle);
     }
 
     return baseStyle;

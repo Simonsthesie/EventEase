@@ -4,7 +4,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { theme } from '../utils/theme';
 import { Button } from './Button';
 
-export const EmptyState = ({ icon = 'calendar-outline', title, message, actionText, onAction }) => {
+interface EmptyStateProps {
+  icon?: keyof typeof Ionicons.glyphMap;
+  title: string;
+  message: string;
+  actionText?: string;
+  onAction?: () => void;
+}
+
+export const EmptyState: React.FC<EmptyStateProps> = ({ icon = 'calendar-outline', title, message, actionText, onAction }) => {
   return (
     <View style={styles.container}>
       <View style={styles.iconContainer}>

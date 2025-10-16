@@ -10,17 +10,25 @@ import appJson from '../../app.json';
 
 // Lecture de la clé depuis la config Expo (app.config.js -> extra.openWeatherApiKey)
 const API_KEY =
-  (Constants?.expoConfig?.extra && Constants.expoConfig.extra.openWeatherApiKey) ||
-  (Constants?.manifest?.extra && Constants.manifest.extra.openWeatherApiKey) ||
-  (appJson?.expo?.extra && appJson.expo.extra.openWeatherApiKey) ||
-  process.env.OPENWEATHER_API_KEY ||
+  (Constants?.expoConfig as any)?.extra?.openWeatherApiKey ||
+  (Constants as any)?.manifest?.extra?.openWeatherApiKey ||
+  // app.json may not have extra at runtime; guard with any
+  ((appJson as any)?.expo?.extra?.openWeatherApiKey) ||
   '';
 
 const BASE_URL = 'https://api.openweathermap.org/data/2.5';
 
+type WeatherData = {
+  temp: number;
+  description?: string;
+  icon?: string;
+  humidity?: number;
+  windSpeed?: number;
+} | null;
+
 export const weatherService = {
   // Météo courante par ville
-  async getWeatherByCity(city) {
+  async getWeatherByCity(city: string): Promise<WeatherData> {
     try {
       if (!API_KEY) return null;
       if (!city) return null;
@@ -48,7 +56,7 @@ export const weatherService = {
   },
 
   // Météo courante par coordonnées
-  async getWeatherByCoords(lat, lon) {
+  async getWeatherByCoords(lat: number, lon: number): Promise<WeatherData> {
     try {
       if (!API_KEY) return null;
       if (lat == null || lon == null) return null;
@@ -77,7 +85,7 @@ export const weatherService = {
   },
 
   // Météo pour une date d'événement (aujourd'hui = /weather, futur ≤ 5 jours = /forecast)
-  async getWeatherForEvent({ eventDateISO, city, lat, lon }) {
+  async getWeatherForEvent({ eventDateISO, city, lat, lon }: { eventDateISO: string; city?: string; lat?: number | null; lon?: number | null; }): Promise<WeatherData> {
     try {
       const eventDate = new Date(eventDateISO);
       const now = new Date();
@@ -99,7 +107,7 @@ export const weatherService = {
 
       // 2) Événement dans ≤ 5 jours → prévisions 5 jours / 3 heures
       if (dayDiff <= 5) {
-        const params = {
+        const params: any = {
           appid: API_KEY,
           units: 'metric',
           lang: 'fr',
@@ -146,7 +154,7 @@ export const weatherService = {
     }
   },
 
-  getWeatherIconUrl(iconCode) {
+  getWeatherIconUrl(iconCode: string) {
     return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
   },
 };

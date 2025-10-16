@@ -6,8 +6,17 @@ import axios from 'axios';
 
 const NOMINATIM_BASE_URL = 'https://nominatim.openstreetmap.org/search';
 
+export type PlaceSuggestion = {
+  id: string;
+  title: string;
+  subtitle?: string;
+  displayName: string;
+  lat: number;
+  lon: number;
+};
+
 export const placesService = {
-  async search(query, limit = 5) {
+  async search(query: string, limit: number = 5): Promise<PlaceSuggestion[]> {
     try {
       if (!query || query.trim().length < 2) return [];
 
@@ -26,9 +35,9 @@ export const placesService = {
 
       const results = Array.isArray(response.data) ? response.data : [];
 
-      return results.map((item, index) => {
+      return results.map((item: any, index: number) => {
         const displayName = item.display_name || '';
-        const parts = displayName.split(',').map(p => p.trim());
+        const parts = displayName.split(',').map((p: string) => p.trim());
         const title = parts[0] || displayName;
         const subtitle = parts.slice(1).join(', ');
         return {

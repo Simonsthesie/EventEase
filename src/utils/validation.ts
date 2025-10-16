@@ -1,33 +1,33 @@
 export const validation = {
-  validateEmail(email) {
+  validateEmail(email: string) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   },
 
-  validatePassword(password) {
+  validatePassword(password: string) {
     // Au moins 6 caractères
     return password && password.length >= 6;
   },
 
-  validateName(name) {
+  validateName(name: string) {
     return name && name.trim().length >= 2;
   },
 
-  validateEventTitle(title) {
+  validateEventTitle(title: string) {
     return title && title.trim().length >= 3;
   },
 
-  validateEventDescription(description) {
+  validateEventDescription(description: string) {
     return description && description.trim().length >= 10;
   },
 
-  validateEventDate(date) {
+  validateEventDate(date: string | Date) {
     if (!date) return false;
     const eventDate = new Date(date);
-    return eventDate instanceof Date && !isNaN(eventDate);
+    return eventDate instanceof Date && !isNaN(eventDate.getTime());
   },
 
-  getErrorMessage(field, value) {
+  getErrorMessage(field: string, value: any) {
     switch (field) {
       case 'email':
         if (!value) return "L'email est requis";

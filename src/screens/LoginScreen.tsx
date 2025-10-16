@@ -20,22 +20,30 @@ import { Button } from '../components/Button';
 import { theme } from '../utils/theme';
 import { validation } from '../utils/validation';
 
+type LoginForm = {
+  name: string;
+  email: string;
+  password: string;
+};
+
+type LoginErrors = Partial<Record<'name' | 'email' | 'password', string>>;
+
 export const LoginScreen = () => {
   const { login, register } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<LoginForm>({
     name: '',
     email: '',
     password: '',
   });
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<LoginErrors>({});
 
   const handleSubmit = async () => {
     // Validation
-    const newErrors = {};
+    const newErrors: LoginErrors = {};
 
     if (!isLogin && !validation.validateName(formData.name)) {
       newErrors.name = validation.getErrorMessage('name', formData.name);

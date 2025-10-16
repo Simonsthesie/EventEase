@@ -3,12 +3,14 @@
 // Ce fichier peut contenir des hooks supplémentaires si nécessaire
 
 import { useState, useEffect } from 'react';
-import { useEvents as useEventsContext } from '../contexts/EventContext';
+import { useEvents as useEventsContext, EventItem } from '../contexts/EventContext';
+
+type Filter = 'all' | 'upcoming' | 'participated' | 'past';
 
 // Hook pour filtrer les événements
-export const useFilteredEvents = (filter = 'all') => {
+export const useFilteredEvents = (filter: Filter = 'all') => {
   const { events } = useEventsContext();
-  const [filteredEvents, setFilteredEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState<EventItem[]>([]);
 
   useEffect(() => {
     let filtered = [...events];
@@ -24,7 +26,7 @@ export const useFilteredEvents = (filter = 'all') => {
     }
 
     // Trier par date (les plus récents en premier)
-    filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+    filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
     setFilteredEvents(filtered);
   }, [events, filter]);

@@ -4,6 +4,7 @@
  * - Clés: événements, utilisateurs, utilisateur courant
  */
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import type { EventItem } from '../contexts/EventContext';
 
 const EVENTS_KEY = '@eventease_events';
 const USERS_KEY = '@eventease_users';
@@ -15,10 +16,10 @@ export const storageService = {
    * Récupère tous les événements
    * @returns {Promise<Array>} Liste d'événements (vide si aucune donnée)
    */
-  async getEvents() {
+  async getEvents(): Promise<EventItem[]> {
     try {
       const data = await AsyncStorage.getItem(EVENTS_KEY);
-      return data ? JSON.parse(data) : [];
+      return data ? (JSON.parse(data) as EventItem[]) : [];
     } catch (error) {
       console.error('Erreur lors de la récupération des événements:', error);
       return [];
@@ -30,7 +31,7 @@ export const storageService = {
    * @param {Array} events Liste d'événements
    * @returns {Promise<void>}
    */
-  async saveEvents(events) {
+  async saveEvents(events: EventItem[]): Promise<void> {
     try {
       await AsyncStorage.setItem(EVENTS_KEY, JSON.stringify(events));
     } catch (error) {
@@ -56,10 +57,10 @@ export const storageService = {
    * Récupère tous les utilisateurs
    * @returns {Promise<Array>} Liste d'utilisateurs (vide si aucune donnée)
    */
-  async getUsers() {
+  async getUsers(): Promise<any[]> {
     try {
       const data = await AsyncStorage.getItem(USERS_KEY);
-      return data ? JSON.parse(data) : [];
+      return data ? (JSON.parse(data) as any[]) : [];
     } catch (error) {
       console.error('Erreur lors de la récupération des utilisateurs:', error);
       return [];
@@ -71,7 +72,7 @@ export const storageService = {
    * @param {Array} users Liste d'utilisateurs
    * @returns {Promise<void>}
    */
-  async saveUsers(users) {
+  async saveUsers(users: any[]): Promise<void> {
     try {
       await AsyncStorage.setItem(USERS_KEY, JSON.stringify(users));
     } catch (error) {
@@ -84,10 +85,10 @@ export const storageService = {
    * Récupère l'utilisateur courant
    * @returns {Promise<Object|null>} Utilisateur courant ou null
    */
-  async getCurrentUser() {
+  async getCurrentUser(): Promise<any | null> {
     try {
       const data = await AsyncStorage.getItem(CURRENT_USER_KEY);
-      return data ? JSON.parse(data) : null;
+      return data ? (JSON.parse(data) as any) : null;
     } catch (error) {
       console.error("Erreur lors de la récupération de l'utilisateur actuel:", error);
       return null;
@@ -99,7 +100,7 @@ export const storageService = {
    * @param {Object|null} user Utilisateur à sauvegarder (ou null pour effacer)
    * @returns {Promise<void>}
    */
-  async saveCurrentUser(user) {
+  async saveCurrentUser(user: any): Promise<void> {
     try {
       await AsyncStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
     } catch (error) {

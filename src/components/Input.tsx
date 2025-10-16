@@ -1,9 +1,24 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, TextInput, Text, StyleSheet, TouchableOpacity, KeyboardTypeOptions, ViewStyle } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { theme } from '../utils/theme';
 
-export const Input = ({
+interface InputProps {
+  label?: string;
+  value: string;
+  onChangeText: (text: string) => void;
+  placeholder?: string;
+  secureTextEntry?: boolean;
+  error?: string;
+  multiline?: boolean;
+  numberOfLines?: number;
+  keyboardType?: KeyboardTypeOptions;
+  autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+  icon?: React.ReactNode;
+  style?: ViewStyle | any;
+}
+
+export const Input: React.FC<InputProps> = ({
   label,
   value,
   onChangeText,
@@ -26,8 +41,8 @@ export const Input = ({
       <View
         style={[
           styles.inputContainer,
-          isFocused && styles.inputFocused,
-          error && styles.inputError,
+          ...(isFocused ? [styles.inputFocused] : []),
+          ...(error ? [styles.inputError] : []),
         ]}
       >
         {icon && <View style={styles.iconContainer}>{icon}</View>}
