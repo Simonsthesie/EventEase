@@ -35,7 +35,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, onPress, onParticip
             color={isToday ? theme.colors.primary : theme.colors.textSecondary}
           />
           <Text style={[styles.date, isToday && styles.todayDate]}>
-            {dateUtils.formatShortDate(event.date)}
+            {dateUtils.formatShortDate(event.date)} • {dateUtils.formatTime(event.date)}
           </Text>
           {isToday && (
             <View style={styles.todayBadge}>
